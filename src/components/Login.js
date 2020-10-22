@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import { connect } from "react-redux";
+import { login } from "../actions/auth";
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -11,30 +12,35 @@ class Login extends Component {
     };
   }
 
-  handleEmailChange = (e) =>{
+  handleEmailChange = (e) => {
     //   console.log(e.target.value);
-      this.setState({
-          email:e.target.value
-      })
-  }
-  handlePasswordChange = (e) =>{
+    this.setState({
+      email: e.target.value,
+    });
+  };
+  handlePasswordChange = (e) => {
     // console.log(e.target.value);
     this.setState({
-        password:e.target.value
-    })
-}
-
+      password: e.target.value,
+    });
+  };
 
   handleFormSubmit = (e) => {
     e.preventDefault();
     // console.log("Email Ref", this.emailInputRef);
     // console.log("Password Ref", this.passwordInputRef);
-    console.log('THIS>STATE', this.state)
+    console.log("THIS>STATE", this.state);
+    const { email, password } = this.state;
+    if (email && password) {
+      this.props.dispatch(login(email, password));
+    }
   };
   render() {
+    const { error, inProgress } = this.props.auth;
     return (
       <form className="login-form">
         <span className="login-signup-header">Log In</span>
+        {error && <div className="alert error-dailog">{error}</div>}
         <div className="field">
           <input
             type="email"
@@ -56,11 +62,22 @@ class Login extends Component {
           />
         </div>
         <div className="field">
-          <button onClick={this.handleFormSubmit}>Login</button>
+          {inProgress ? (
+            <button onClick={this.handleFormSubmit} disabled={inProgress}>
+              Logging in...
+            </button>
+          ) : (
+            <button onClick={this.handleFormSubmit}>Log In</button>
+          )}
         </div>
       </form>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
 
-export default Login;
+export default connect(mapStateToProps)(Login);
