@@ -6,6 +6,7 @@ import {
   LOG_OUT,
   SIGNUP_START,
   SIGNUP_FAILED,
+  CLEAR_AUTH_STATE,
   SIGNUP_SUCCESS,
 } from './actionTypes';
 import { APIUrls } from '../helpers/urls';
@@ -115,4 +116,10 @@ export function signupSuccessful(user) {
     type: SIGNUP_SUCCESS,
     user,
   };
+}
+
+export function clearAuthState(){
+  return{
+    type:CLEAR_AUTH_STATE
+  }
 }

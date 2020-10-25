@@ -5,6 +5,7 @@ import {
   AUTHENTICATE_USER,
   LOG_OUT,
   SIGNUP_START,
+  CLEAR_AUTH_STATE,
   SIGNUP_SUCCESS,
   SIGNUP_FAILED,
 } from '../actions/actionTypes';
@@ -18,6 +19,11 @@ const initialAuthState = {
 
 export default function auth(state = initialAuthState, action) {
   switch (action.type) {
+    case CLEAR_AUTH_STATE:
+      return{
+        ...state,
+        error:null
+      }
     case LOGIN_START:
     case SIGNUP_START:
       return {
