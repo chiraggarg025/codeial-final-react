@@ -6,12 +6,12 @@ import {
   LOG_OUT,
   SIGNUP_START,
   SIGNUP_FAILED,
-  CLEAR_AUTH_STATE,
   SIGNUP_SUCCESS,
+  CLEAR_AUTH_STATE,
   EDIT_USER_SUCCESSFUL,
 } from './actionTypes';
 import { APIUrls } from '../helpers/urls';
-import { getAuthTokenFromLocalStorage, getFormBody } from '../helpers/utils';
+import { getFormBody, getAuthTokenFromLocalStorage } from '../helpers/utils';
 
 export function startLogin() {
   return {
@@ -124,12 +124,14 @@ export function clearAuthState() {
     type: CLEAR_AUTH_STATE,
   };
 }
+
 export function editUserSuccessful(user) {
   return {
     type: EDIT_USER_SUCCESSFUL,
     user,
   };
 }
+
 export function editUserFailed(error) {
   return {
     type: EDIT_USER_SUCCESSFUL,
@@ -154,20 +156,19 @@ export function editUser(name, password, confirmPassword, userId) {
         id: userId,
       }),
     })
-    .then(response => response.json())
-    .then((data) => {
-      console.log('data',data);
-      if(data.success){
-        dispatch(editUserSuccessful(data.data.user));
-        if(data.data.token){
-          localStorage.setItem('token',data.data.token)
-        }
-        return;
-      }
+      .then((repsonse) => repsonse.json())
+      .then((data) => {
+        console.log('EDIT PROFIle data', data);
+        if (data.success) {
+          dispatch(editUserSuccessful(data.data.user));
 
-      
-      dispatch(editUserFailed(data.message));
-      return;
-    })
+          if (data.data.token) {
+            localStorage.setItem('token', data.data.token);
+          }
+          return;
+        }
+
+        dispatch(editUserFailed(data.message));
+      });
   };
 }
