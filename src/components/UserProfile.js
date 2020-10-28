@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchUserProfile } from '../actions/profile';
 
 class UserProfile extends Component {
   componentDidMount() {
@@ -6,16 +8,35 @@ class UserProfile extends Component {
 
     if (match.params.userId) {
       // dispatch an action
+      this.props.dispatch(fetchUserProfile(match.params.userId));
     }
   }
 
-  render() {
+  checkIfUserIsAFriend = () => {
     console.log('this.props', this.props);
+    const { match, friends } = this.props;
+    const userId = match.params.userId;
+
+    const index = friends.map((friend) => friend.to_user._id).indexOf(userId);
+    if (index !== -1) {
+      return true;
+    }
+    return false;
+  };
+
+  render() {
     const {
       match: { params },
+      profile,
     } = this.props;
     console.log('this.props', params);
+    const user = profile.user;
 
+    if (profile.inProgress) {
+      return <h1>Loading!</h1>;
+    }
+
+    const isUserAFriend = this.checkIfUserIsAFriend();
     return (
       <div className="settings">
         <div className="img-container">
@@ -27,20 +48,30 @@ class UserProfile extends Component {
 
         <div className="field">
           <div className="field-label">Name</div>
-          <div className="field-value">Some name</div>
+          <div className="field-value">{user.name}</div>
         </div>
 
         <div className="field">
           <div className="field-label">Email</div>
-          <div className="field-value">test@test.com</div>
+          <div className="field-value">{user.email}</div>
         </div>
 
         <div className="btn-grp">
-          <button className="button save-btn">Add Friend</button>
+          {!isUserAFriend ? (
+            <button className="button save-btn">Add Friend</button>
+          ) : (
+            <button className="button save-btn">Remove Friend</button>
+          )}
         </div>
       </div>
     );
   }
 }
 
-export default UserProfile;
+function mapStateToProps({ profile, friends }) {
+  return {
+    profile,
+    friends,
+  };
+}
+export default connect(mapStateToProps)(UserProfile);
