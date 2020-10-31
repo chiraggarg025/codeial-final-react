@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createPost } from '../actions/posts';
+
 class CreatePost extends Component {
   constructor(props) {
     super(props);
@@ -8,11 +9,12 @@ class CreatePost extends Component {
       content: '',
     };
   }
-  handleOnClick = () => {
-    // dispatch an action
 
+  handleOnClick = () => {
+    // dispatch action
     this.props.dispatch(createPost(this.state.content));
   };
+
   handleChange = (e) => {
     this.setState({
       content: e.target.value,
@@ -26,6 +28,7 @@ class CreatePost extends Component {
           value={this.state.content}
           onChange={this.handleChange}
         />
+
         <div>
           <button id="add-post-btn" onClick={this.handleOnClick}>
             Add Post
